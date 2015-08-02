@@ -25,7 +25,6 @@ Benchmark Result 1st version:
 BenchmarkGeofence	10000000	       109 ns/op
 BenchmarkGeoContains	 3000000	       475 ns/op
 ====================================================*/
-
 func BenchmarkGeofence(b *testing.B) {
 	// Chicago geofence
 	polygon := []*geo.Point{
@@ -125,8 +124,8 @@ func BenchmarkGeoContains(b *testing.B) {
 		geo.NewPoint(41.9948536336077, -87.86373138340423),
 	}
 
+	golangGeo := geo.NewPolygon(polygon)
 	for i := 0; i < b.N; i++ {
-		golangGeo := geo.NewPolygon(polygon)
 		point := randomPointCustom(41.642929165686375, 42.070116505457364, -87.94566393946297, -87.38588330335915, 100)
 		golangGeo.Contains(point)
 	}
