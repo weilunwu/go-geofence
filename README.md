@@ -1,4 +1,4 @@
-go-geofence is a library to perform point-in-geofence searches in Golang.
+go-geofence is a library to perform point-in-polygon searches in Golang.
 
 Advantages compared with golang-geo: 
 
