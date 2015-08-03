@@ -20,12 +20,17 @@ type Geofence struct {
 	maxTileY    float64
 }
 
+const defaultGranularity = 20
+
 // NewGeofence is the construct for Geofence, vertices: {{(1,2),(2,3)}, {(1,0)}}.
 // 1st array contains polygon vertices. 2nd array contains holes.
-// TODO: pass in granularity
-func NewGeofence(points [][]*geo.Point) *Geofence {
+func NewGeofence(points [][]*geo.Point, args ...interface{}) *Geofence {
 	geofence := &Geofence{}
-	geofence.granularity = 20
+	if len(args) > 0 {
+		geofence.granularity = args[0].(int64)
+	} else {
+		geofence.granularity = defaultGranularity
+	}
 	geofence.vertices = points[0]
 	if len(points) > 1 {
 		geofence.holes = points[1:]

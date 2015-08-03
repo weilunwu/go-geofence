@@ -2,20 +2,20 @@ package geofence
 
 import "github.com/kellydunn/golang-geo"
 
-// FenceList is a struct to store good and bad regions
-type FenceList struct {
+// region is a struct to store good and bad areas in region
+type region struct {
 	whiteouts []*Geofence
 	blackouts []*Geofence
 }
 
 // GeofenceGroup is a struct to store k-v pair of id and regions
 type GeofenceGroup struct {
-	entries map[int]*FenceList
+	entries map[int]*region
 }
 
 // NewGeofenceGroup is the constructor for GeofenceGroup
 func NewGeofenceGroup() *GeofenceGroup {
-	entries := make(map[int]*FenceList)
+	entries := make(map[int]*region)
 	return &GeofenceGroup{entries: entries}
 }
 
@@ -27,7 +27,7 @@ func (group *GeofenceGroup) Add(id int, whiteoutGfs []*Geofence, blackoutGfs []*
 		entry.blackouts = append(entry.blackouts, blackoutGfs...)
 	}
 
-	list := &FenceList{whiteouts: whiteoutGfs, blackouts: blackoutGfs}
+	list := &region{whiteouts: whiteoutGfs, blackouts: blackoutGfs}
 	group.entries[id] = list
 }
 
@@ -50,6 +50,24 @@ func (group *GeofenceGroup) GetValidKeys(point *geo.Point) map[int]bool {
 		}
 	}
 	return result
+}
+
+// GetWhiteouts return the whiteout area of a region
+func (group *GeofenceGroup) GetWhiteouts(id int) []*Geofence {
+	entry, ok := group.entries[id]
+	if ok {
+		return entry.whiteouts
+	}
+	return nil
+}
+
+// GetBlackouts return the blackout area of a region
+func (group *GeofenceGroup) GetBlackouts(id int) []*Geofence {
+	entry, ok := group.entries[id]
+	if ok {
+		return entry.blackouts
+	}
+	return nil
 }
 
 func isPointValid(point *geo.Point, whiteoutGfs []*Geofence, blackoutGfs []*Geofence) bool {

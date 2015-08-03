@@ -12,12 +12,33 @@ func TestCorrectness(t *testing.T) {
 	polygon := randomPolygon(2000, 0.1)
 	geoPoly := geo.NewPolygon(polygon)
 	holes := []*geo.Point{}
-	geofence := NewGeofence([][]*geo.Point{polygon, holes})
+	geofence := NewGeofence([][]*geo.Point{polygon, holes}, int64(20))
 
 	for i := 0; i < 100000; i++ {
 		point := randomPoint(200)
 		assert.Equal(t, geofence.Inside(point), geoPoly.Contains(point))
 	}
+}
+
+func TestHoles(t *testing.T) {
+	polygon := []*geo.Point{
+		geo.NewPoint(0, 0),
+		geo.NewPoint(4, 0),
+		geo.NewPoint(4, 4),
+		geo.NewPoint(0, 4),
+	}
+
+	hole := []*geo.Point{
+		geo.NewPoint(1, 0),
+		geo.NewPoint(3, 0),
+		geo.NewPoint(3, 3),
+		geo.NewPoint(1, 3),
+	}
+
+	geofence := NewGeofence([][]*geo.Point{polygon, hole})
+	assert.True(t, geofence.Inside(geo.NewPoint(0.5, 0.5)))
+	assert.False(t, geofence.Inside(geo.NewPoint(2, 2)))
+	assert.False(t, geofence.Inside(geo.NewPoint(5, 5)))
 }
 
 /*===================================================
